@@ -3,49 +3,64 @@ import { Header } from "../../components/Header";
 import { TaskList } from "../../components/TaskList";
 import { List } from "../../components/List";
 import { useNavigate } from "react-router-dom";
+import api from '../../services/api';
 
 const LOCAL_STORAGE_KEY = "todo:savedLists";
 
 export interface IList {
   id: string;
-  title: string;
+  name: string;
   isCompleted: boolean;
 }
 
 export function Home() {
+  const [id, setId] = useState('');
   const [lists, setLists] = useState<IList[]>([]);
   const navigate = useNavigate();
 
-  function loadSavedLists() {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) {
-        setLists(JSON.parse(saved));
+  async function handleList(listTitle: string) {
+
+    const data = {
+      name: listTitle,
+      completed: false
+    };
+    try {
+      await api.post('lists', data);
+
+    } catch (err) {
+      alert('Erro no cadastro, tente novamente.');
     }
   }
 
   useEffect(() => {
-    loadSavedLists();
-  }, []);
+    api.get('lists').then(response => {
+      setLists(response.data);
+    })
+  });
+
+  async function handleDeleteList(id: string) {
+    try {
+      await api.delete(`lists/${id}`);
+
+      setLists(lists.filter(list => list.id !== id));
+    } catch (err) {
+      alert('Erro ao deletar caso, tente novamente.');
+    }
+  }
+
 
   function setListsAndSave(newLists: IList[]) {
     setLists(newLists);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newLists));
   }
 
-  function addList(listTitle: string) {
-    setListsAndSave([
-      ...lists,
-      {
-        id: crypto.randomUUID(),
-        title: listTitle,
-        isCompleted: false,
-      },
-    ]);
-  }
 
-  function deleteListById(lisId: string) {
-    const newLists = lists.filter((list) => list.id !== lisId);
-    setListsAndSave(newLists);
+  function selectTask(listId: string){
+
+    localStorage.setItem('listId', listId);
+
+    navigate("/detalhes")
+
   }
 
   function toggleListCompletedById(listId: string) {
@@ -63,11 +78,11 @@ export function Home() {
 
   return (
     <>
-      <Header onAddTask={addList} />
+      <Header onAddTask={handleList} />
       <List
         list={lists}
-        onDelete={deleteListById}
-        onComplete={toggleListCompletedById}
+        onDelete={handleDeleteList}
+        onComplete={selectTask}
       />
     </>
   );

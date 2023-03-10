@@ -9,15 +9,28 @@ module.exports = {
  },
 
   async create(request, response) {
-    const { name } = request.body
+    const { name, completed } = request.body
 
     const id = crypto.randomBytes(4).toString('HEX');
 
     await connection('lists').insert({
       id,
-      name
+      name,
+      completed
     })
 
     return response.json({ id })
+  },
+
+  async delete(request, response) {
+    const { id } = request.params
+
+    const list = await connection('lists')
+      .where('id', id)
+      .first()
+
+    await connection('lists').where('id', id).delete()
+
+    return response.status(204).send()
   }
 }

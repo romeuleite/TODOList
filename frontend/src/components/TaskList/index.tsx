@@ -9,7 +9,7 @@ interface Props {
     onDelete: (taskId: string) => void;
 }
 
-export function TaskList({ tasklist, onComplete, onDelete }: Props) {
+export function TaskList({ tasklist, onComplete, onDelete}: Props) {
     const tasksQuantity = tasklist.length;
     const completedTasks = tasklist.filter((task) => task.isCompleted).length;
 

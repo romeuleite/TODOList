@@ -8,6 +8,7 @@ const routes = express.Router();
 
 routes.get('/lists', ListController.index);
 routes.post('/lists', ListController.create);
+routes.delete('/lists/:id', ListController.delete);
 
 routes.get('/listtasks', ListTasksController.index);
 
