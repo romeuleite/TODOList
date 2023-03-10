@@ -2,6 +2,7 @@ import Logo from "../../assets/logo.svg";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import styles from "./header.module.css";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   onAddTask: (taskTitle: string) => void;
@@ -9,6 +10,7 @@ interface Props {
 
 export function Header({ onAddTask }: Props) {
   const [title, setTitle] = useState("");
+  const navigate = useNavigate();
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -23,7 +25,7 @@ export function Header({ onAddTask }: Props) {
 
   return (
     <header className={styles.header}>
-      <img src={Logo} />
+      <img src={Logo} onClick={() => navigate("/")}/>
 
       <form onSubmit={handleSubmit} className={styles.newTaskForm}>
         <input

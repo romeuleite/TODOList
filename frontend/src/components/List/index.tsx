@@ -2,17 +2,18 @@ import { TbClipboardText } from "react-icons/tb";
 import { IList } from "../../pages/Home";
 import { ITask } from "../../pages/SingleList";
 import { TaskList } from "../TaskList";
+import { ListComponent } from "../ListComponent";
 import styles from "./list.module.css";
 
 interface Props {
     list: IList[];
-    onComplete: (taskListId: string) => void;
-    onDelete: (taskListId: string) => void;
+    onComplete: (listComponentId: string) => void;
+    onDelete: (listComponentId: string) => void;
 }
 
 export function List({ list, onComplete, onDelete }: Props) {
     const listQuantity = list.length;
-    const completedList = list.filter((taskList) => taskList.isCompleted).length;
+    const completedList = list.filter((listcomponent) => listcomponent.isCompleted).length;
 
     return (
         <section className={styles.list}>
@@ -31,10 +32,10 @@ export function List({ list, onComplete, onDelete }: Props) {
             </header>
 
             <div className={styles.listview}>
-                {list.map((taskList) => (
-                    <TaskList
-                        key={taskList.id}
-                        tasklist={list}
+                {list.map((listComponent) => (
+                    <ListComponent
+                        key={listComponent.id}
+                        listComponent={listComponent}
                         onComplete={onComplete}
                         onDelete={onDelete}
                     />

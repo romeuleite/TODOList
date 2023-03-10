@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { TaskList } from "../../components/TaskList";
 import { List } from "../../components/List";
+import { useNavigate } from "react-router-dom";
 
 const LOCAL_STORAGE_KEY = "todo:savedLists";
 
@@ -13,6 +14,7 @@ export interface IList {
 
 export function Home() {
   const [lists, setLists] = useState<IList[]>([]);
+  const navigate = useNavigate();
 
   function loadSavedLists() {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
