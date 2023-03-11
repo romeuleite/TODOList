@@ -1,7 +1,5 @@
 import { TbClipboardText } from "react-icons/tb";
 import { IList } from "../../pages/Home";
-import { ITask } from "../../pages/SingleList";
-import { TaskList } from "../TaskList";
 import { ListComponent } from "../ListComponent";
 import styles from "./list.module.css";
 
@@ -9,11 +7,12 @@ interface Props {
     list: IList[];
     onComplete: (listComponentId: string) => void;
     onDelete: (listComponentId: string) => void;
+    onSelect: (listComponentId: string) => void;
 }
 
-export function List({ list, onComplete, onDelete }: Props) {
+export function List({ list, onComplete, onDelete, onSelect }: Props) {
     const listQuantity = list.length;
-    const completedList = list.filter((listcomponent) => listcomponent.isCompleted).length;
+    const completedList = list.filter((listComponent) => listComponent.completed).length;
 
     return (
         <section className={styles.list}>
@@ -38,6 +37,7 @@ export function List({ list, onComplete, onDelete }: Props) {
                         listComponent={listComponent}
                         onComplete={onComplete}
                         onDelete={onDelete}
+                        onSelect={onSelect}
                     />
                 ))}
 

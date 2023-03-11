@@ -3,27 +3,26 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 
 import styles from "./listcomponent.module.css";
 import { IList } from "../../pages/Home";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   listComponent: IList;
-  onComplete: (listId: string) => void;
-  onDelete: (listId: string) => void;
+  onComplete: (listComponentId: string) => void;
+  onDelete: (listComponentId: string) => void;
+  onSelect: (listComponentId: string) => void;
 }
 
-export function ListComponent({ listComponent, onComplete, onDelete }: Props) {
-  const navigate = useNavigate();
+export function ListComponent({ listComponent, onComplete, onDelete, onSelect }: Props) {
 
   return (
-    <div className={styles.listcomponent}>
+    <div className={styles.listComponent}>
       <button
         className={styles.checkContainer}
         onClick={() => onComplete(listComponent.id)}
       >
-        {listComponent.isCompleted ? <BsFillCheckCircleFill /> : <div />}
+        {listComponent.completed ? <BsFillCheckCircleFill /> : <div />}
       </button>
 
-      <p className={listComponent.isCompleted ? styles.textCompleted : ""} onClick={() => onComplete(listComponent.id)}>
+      <p style={{cursor: "pointer"}} className={listComponent.completed ? styles.textCompleted : ""} onClick={() => onSelect(listComponent.id)}>
         {listComponent.name}
       </p>
 

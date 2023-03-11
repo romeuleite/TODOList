@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
 import { Header } from "../../components/Header";
-import { TaskList } from "../../components/TaskList";
 import { List } from "../../components/List";
 import { useNavigate } from "react-router-dom";
 import api from '../../services/api';
 
-const LOCAL_STORAGE_KEY = "todo:savedLists";
 
 export interface IList {
   id: string;
   name: string;
-  isCompleted: boolean;
+  completed: boolean;
 }
 
 export function Home() {
-  const [id, setId] = useState('');
   const [lists, setLists] = useState<IList[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    loadLists();
+  });
+
+  function loadLists() {
+    api.get('lists').then(response => {
+      setLists(response.data);
+    })
+  }
 
   async function handleList(listTitle: string) {
 
@@ -27,16 +34,12 @@ export function Home() {
     try {
       await api.post('lists', data);
 
+      loadLists();
+
     } catch (err) {
       alert('Erro no cadastro, tente novamente.');
     }
   }
-
-  useEffect(() => {
-    api.get('lists').then(response => {
-      setLists(response.data);
-    })
-  });
 
   async function handleDeleteList(id: string) {
     try {
@@ -49,31 +52,24 @@ export function Home() {
   }
 
 
-  function setListsAndSave(newLists: IList[]) {
-    setLists(newLists);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newLists));
-  }
-
-
-  function selectTask(listId: string){
+  function selectTask(listId: string) {
 
     localStorage.setItem('listId', listId);
-
     navigate("/detalhes")
-
   }
 
-  function toggleListCompletedById(listId: string) {
-    const newLists = lists.map((list) => {
-      if (list.id === listId) {
-        return {
-          ...list,
-          isCompleted: !list.isCompleted,
+
+  async function checkList(listId: string) {
+
+    lists.map((listComponent) => {
+      if (listComponent.id === listId) {
+        const data = {
+          completed: !listComponent.completed,
         };
+
+        api.patch(`lists/${listId}`, data);     
       }
-      return list;
     });
-    setListsAndSave(newLists);
   }
 
   return (
@@ -82,7 +78,8 @@ export function Home() {
       <List
         list={lists}
         onDelete={handleDeleteList}
-        onComplete={selectTask}
+        onComplete={checkList}
+        onSelect={selectTask}
       />
     </>
   );

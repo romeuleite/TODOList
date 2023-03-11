@@ -11,7 +11,7 @@ interface Props {
 
 export function TaskList({ tasklist, onComplete, onDelete}: Props) {
     const tasksQuantity = tasklist.length;
-    const completedTasks = tasklist.filter((task) => task.isCompleted).length;
+    const completedTasks = tasklist.filter((task) => task.completed).length;
 
     return (
         <section className={styles.tasklist}>

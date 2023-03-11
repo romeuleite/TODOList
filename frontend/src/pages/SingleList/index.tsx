@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Header } from "../../components/Header";
 import { TaskList } from "../../components/TaskList";
 import api from "../../services/api";
 
-const LOCAL_STORAGE_KEY = "todo:savedTasks";
 
 export interface ITask {
   id: string;
   title: string;
-  isCompleted: boolean;
+  completed: boolean;
 }
 
 export function SingleList() {
   const [tasks, setTasks] = useState<ITask[]>([]);
-  const navigate = useNavigate();
 
   const listId = localStorage.getItem('listId');
 
@@ -42,7 +39,7 @@ export function SingleList() {
 
       setTasks(tasks.filter(task => task.id !== id));
     } catch (err) {
-      alert('Erro ao deletar caso, tente novamente.');
+      alert('Erro ao deletar tarefa, tente novamente.');
     }
   }
 
@@ -63,28 +60,23 @@ export function SingleList() {
       loadTasks();
 
     } catch (err) {
-      alert('Erro ao cadastrar caso, tente novamente.');
+      alert('Erro ao cadastrar tarefa, tente novamente.');
     }
   }
 
+  async function checkTask(taskId: string) {
 
-  function setTasksAndSave(newTasks: ITask[]) {
-    setTasks(newTasks);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
-  }
-
-
-  function toggleTaskCompletedById(taskId: string) {
-    const newTasks = tasks.map((task) => {
+    tasks.map(async (task) => {
       if (task.id === taskId) {
-        return {
-          ...task,
-          isCompleted: !task.isCompleted,
+        const data = {
+          completed: !task.completed,
         };
+
+        await api.patch(`tasks/${taskId}`, data); 
+
+        loadTasks();
       }
-      return task;
     });
-    setTasksAndSave(newTasks);
   }
 
   return (
@@ -93,7 +85,7 @@ export function SingleList() {
       <TaskList
         tasklist={tasks}
         onDelete={handleDeleteTask}
-        onComplete={toggleTaskCompletedById}
+        onComplete={checkTask}
       />
     </>
   );

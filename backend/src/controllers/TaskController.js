@@ -49,5 +49,23 @@ module.exports = {
     await connection('tasks').where('id', id).delete()
 
     return response.status(204).send()
+  },
+
+  async update(request, response) {
+    const { id } = request.params
+    const { completed} = request.body
+
+    const task = await connection('tasks')
+      .where('id', id)
+
+    if (!task) {
+      return response.status(400).json({ error: 'Task does not exists.' })
+    }
+
+    await connection('tasks').where('id', id).update({
+      completed
+    })
+
+    return response.status(204).send()
   }
 }

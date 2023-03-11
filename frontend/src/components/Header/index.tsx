@@ -25,7 +25,7 @@ export function Header({ onAddTask }: Props) {
 
   return (
     <header className={styles.header}>
-      <img src={Logo} onClick={() => navigate("/")}/>
+      <img style={{cursor: "pointer"}} src={Logo} onClick={() => navigate("/")}/>
 
       <form onSubmit={handleSubmit} className={styles.newTaskForm}>
         <input
